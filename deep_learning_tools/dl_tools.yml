@@ -1,0 +1,14 @@
+name: dl_tools
+channels:
+  - anaconda
+  - conda-forge
+  - defaults
+dependencies:
+  - python>=3.7.0
+  - matplotlib
+  - numpy
+  - tensorflow
+  - jupyter
+  - scipy
+  - pip:
+    - keras==2.1.6

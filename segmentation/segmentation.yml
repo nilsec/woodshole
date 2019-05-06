@@ -1,0 +1,20 @@
+name: segmentation
+channels:
+  - anaconda
+  - conda-forge
+  - defaults
+dependencies:
+  - python>=3.7.0
+  - numpy
+  - tensorflow
+# replace with tensorflow-gpu on paperspace - test against cuda version
+  - jupyter
+  - scipy
+  - cython
+  - pip
+  - zarr
+  - z5py
+  - pip:
+    - "--editable=git+git://github.com/funkey/gunpowder.git@release-v1.0#egg=gunpowder"
+    - "--editable=git+git://github.com/nilsec/funlib.learn.tensorflow.git@master#egg=funlib.learn.tensorflow"
+    - "--editable=git+git://github.com/TuragaLab/malis.git@master#egg=malis"
