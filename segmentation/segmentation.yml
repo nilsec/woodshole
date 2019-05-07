@@ -14,6 +14,7 @@ dependencies:
   - pip
   - zarr
   - z5py
+  - mlpack
   - pip:
     - "--editable=git+git://github.com/funkey/gunpowder.git@release-v1.0#egg=gunpowder"
     - "--editable=git+git://github.com/nilsec/funlib.learn.tensorflow.git@master#egg=funlib.learn.tensorflow"
