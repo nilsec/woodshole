@@ -10,12 +10,8 @@ import daisy
 import os
 
 
-# os.environ["CUDA_VISIBLE_DEVICES"]="-1"
+def predict(iteration, in_file, out_file, setup_dir, out_dataset):
 
-def predict(iteration, in_file, out_file, ):
-    setup_dir = '/groups/funke/funkelab/sheridana/lsd_experiments/cremi/' \
-                '02_train/setup04/'
-    out_dataset = 'volumes/affs'
 
     # TODO: change to predict graph
     with open(os.path.join(setup_dir, 'train_net_config.json'), 'r') as f:
@@ -27,7 +23,6 @@ def predict(iteration, in_file, out_file, ):
     output_shape = Coordinate(config['output_shape'])
     print(output_shape)
     context = (input_shape - output_shape) // 2
-    # print("Context is %s" % (context))
 
     chunkgrid = [2, 4, 4]
     # Initial ROI
@@ -36,11 +31,10 @@ def predict(iteration, in_file, out_file, ):
             (30, 400, 400)) * np.array(voxel_size),
         shape=output_shape * voxel_size * Coordinate(chunkgrid),
         # shape=output_shape * voxel_size
-    )
+    ) # Cremi specific, make this more usable.
     print("Original ROI %s" % roi)
 
     # nm
-
     context_nm = context * voxel_size
     read_roi = roi.copy()
     read_roi = read_roi.grow(context_nm, context_nm)
@@ -57,8 +51,6 @@ def predict(iteration, in_file, out_file, ):
     print("Read ROI in voxel space is {}".format(read_roi / voxel_size))
     print("Output ROI in voxel space is {}".format(output_roi / voxel_size))
 
-    # print("Cropped ROI in voxel space is {}".format(roi / voxel_size))
-
     raw = ArrayKey('RAW')
     affs = ArrayKey('AFFS')
 
@@ -67,6 +59,10 @@ def predict(iteration, in_file, out_file, ):
         output_roi.get_shape()
     )
 
+    # TODO: Introduces daisy dependency, does that work without ?
+    # Also, daisy.ROI and gunpowder.Roi have different behaviour, important
+    # source of confusion. Prepare_ds only works with daisy.Roi, while
+    # gunpowder node eg. Crop only works with gunpowder.Roi
     ds = daisy.prepare_ds(
         out_file,
         out_dataset,
@@ -108,14 +104,14 @@ def predict(iteration, in_file, out_file, ):
             # TODO: change to predict graph
             graph=os.path.join(setup_dir, 'train_net.meta')
         ) +
-        IntensityScaleShift(raw, 0.5, 0.5) +
+        IntensityScaleShift(raw, 0.5, 0.5) + # Just for visualization.
         ZarrWrite(
             dataset_names={
-                affs: 'volumes/affs',
+                affs: out_dataset,
                 raw: 'volumes/raw',
             },
             output_filename=out_file
-        ) +
+        ) + # TODO: Would be nice to have a consistent file format (eg. only n5)
         PrintProfilingStats(every=10) +
         Scan(chunk_request)
     )
@@ -134,10 +130,17 @@ if __name__ == "__main__":
     in_file = '/groups/funke/funkelab/sheridana/lsd_experiments/' \
               'cremi/01_data/testing/sample_C_padded_20160501.' \
               'aligned.filled.cropped.62:153.n5'
+
+    setup_dir = '/groups/funke/funkelab/sheridana/lsd_experiments/cremi/' \
+                '02_train/setup04/'
+    out_dataset = 'volumes/affs'
+
     iteration = 500000
     out_file = 'affinities.zarr'
 
     predict(
         iteration,
         in_file,
-        out_file)
+        out_file,
+        setup_dir,
+        out_dataset)
