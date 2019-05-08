@@ -1,0 +1,7 @@
+*.n5
+*.gz
+*.config
+*.meta
+*.json
+event*
+segmentation/src
