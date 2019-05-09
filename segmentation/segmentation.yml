@@ -15,8 +15,12 @@ dependencies:
   - z5py
   - mlpack
   - pip:
+    - mahotas
+    - neuroglancer
     - "--editable=git+git://github.com/funkey/gunpowder.git@release-v1.0#egg=gunpowder"
     - "--editable=git+git://github.com/nilsec/funlib.learn.tensorflow.git@master#egg=funlib.learn.tensorflow"
     - "--editable=git+git://github.com/TuragaLab/malis.git@master#egg=malis"
     - "--editable=git+git://github.com/funkelab/daisy.git@master#egg=daisy"
     - "--editable=git+git://github.com/funkey/zarr.git@master#egg=zarr"
+    - "--editable=git+git://github.com/funkey/waterz.git@master#egg=waterz"
+    - "--editable=git+git://github.com/funkelab/funlib.segment.git@master#egg=funlib.segment"
